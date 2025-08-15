@@ -14,8 +14,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+generator prismabox { 
+  provider = "prismabox"
+  typeboxImportDependencyName = "elysia"
+  typeboxImportVariableName = "t"
+  inputModel = true
+  output   = "../generated/prismabox"
+} 
+
+// Seus modelos de dados vão aqui
+// O Clerk gerencia os usuários, então não precisamos de um modelo User
+
+model Url {
+  id          String   @id @default(cuid())
+  shortId     String   @unique @db.VarChar(8)
+  originalUrl String   @db.Text
+  createdAt   DateTime @default(now())
+  clicks      Int      @default(0)
+  createdBy   String   @db.VarChar(45) // IP address (IPv6 max length)
+  
+  @@map("urls")
+  @@index([createdAt])
 }

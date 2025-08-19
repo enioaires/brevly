@@ -1,3 +1,3 @@
-export * from "./Url";
+export * from "./Waitlist";
 export * from "./__nullable__";
 export * from "./__transformDate__";

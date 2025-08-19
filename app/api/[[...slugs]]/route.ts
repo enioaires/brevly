@@ -3,7 +3,7 @@ import { swagger } from '@elysiajs/swagger'
 import { opentelemetry } from '@elysiajs/opentelemetry'
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
-import { urlRoutes } from '../routes/url'
+import { waitlistRoutes } from '../routes/waitlist'
 
 export const app = new Elysia({ prefix: '/api' })
     .onError(({ code, error, set }) => {
@@ -89,12 +89,7 @@ export const app = new Elysia({ prefix: '/api' })
             ]
         })
     )
-    .get('/health', () => ({
-        message: 'Hello World! API is running 🚀',
-        timestamp: new Date().toISOString()
-    }))
-
-    .use(urlRoutes)
+    .use(waitlistRoutes)
 
 export const GET = app.handle
 export const POST = app.handle

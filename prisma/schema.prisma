@@ -25,14 +25,11 @@ generator prismabox {
 // Seus modelos de dados vão aqui
 // O Clerk gerencia os usuários, então não precisamos de um modelo User
 
-model Url {
-  id          String   @id @default(cuid())
-  shortId     String   @unique @db.VarChar(8)
-  originalUrl String   @db.Text
-  createdAt   DateTime @default(now())
-  clicks      Int      @default(0)
-  createdBy   String   @db.VarChar(45) // IP address (IPv6 max length)
+model Waitlist {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
   
-  @@map("urls")
+  @@map("waitlist")
   @@index([createdAt])
 }

@@ -4,48 +4,33 @@ import { __transformDate__ } from "./__transformDate__";
 
 import { __nullable__ } from "./__nullable__";
 
-export const UrlPlain = t.Object(
-  {
-    id: t.String(),
-    shortId: t.String(),
-    originalUrl: t.String(),
-    createdAt: t.Date(),
-    clicks: t.Integer(),
-    createdBy: t.String(),
-  },
+export const WaitlistPlain = t.Object(
+  { id: t.String(), email: t.String(), createdAt: t.Date() },
   { additionalProperties: false },
 );
 
-export const UrlRelations = t.Object({}, { additionalProperties: false });
+export const WaitlistRelations = t.Object({}, { additionalProperties: false });
 
-export const UrlPlainInputCreate = t.Object(
-  {
-    originalUrl: t.String(),
-    clicks: t.Optional(t.Integer()),
-    createdBy: t.String(),
-  },
+export const WaitlistPlainInputCreate = t.Object(
+  { email: t.String() },
   { additionalProperties: false },
 );
 
-export const UrlPlainInputUpdate = t.Object(
-  {
-    originalUrl: t.Optional(t.String()),
-    clicks: t.Optional(t.Integer()),
-    createdBy: t.Optional(t.String()),
-  },
+export const WaitlistPlainInputUpdate = t.Object(
+  { email: t.Optional(t.String()) },
   { additionalProperties: false },
 );
 
-export const UrlRelationsInputCreate = t.Object(
+export const WaitlistRelationsInputCreate = t.Object(
   {},
   { additionalProperties: false },
 );
 
-export const UrlRelationsInputUpdate = t.Partial(
+export const WaitlistRelationsInputUpdate = t.Partial(
   t.Object({}, { additionalProperties: false }),
 );
 
-export const UrlWhere = t.Partial(
+export const WaitlistWhere = t.Partial(
   t.Recursive(
     (Self) =>
       t.Object(
@@ -54,31 +39,28 @@ export const UrlWhere = t.Partial(
           NOT: t.Union([Self, t.Array(Self, { additionalProperties: false })]),
           OR: t.Array(Self, { additionalProperties: false }),
           id: t.String(),
-          shortId: t.String(),
-          originalUrl: t.String(),
+          email: t.String(),
           createdAt: t.Date(),
-          clicks: t.Integer(),
-          createdBy: t.String(),
         },
         { additionalProperties: false },
       ),
-    { $id: "Url" },
+    { $id: "Waitlist" },
   ),
 );
 
-export const UrlWhereUnique = t.Recursive(
+export const WaitlistWhereUnique = t.Recursive(
   (Self) =>
     t.Intersect(
       [
         t.Partial(
           t.Object(
-            { id: t.String(), shortId: t.String() },
+            { id: t.String(), email: t.String() },
             { additionalProperties: false },
           ),
           { additionalProperties: false },
         ),
         t.Union(
-          [t.Object({ id: t.String() }), t.Object({ shortId: t.String() })],
+          [t.Object({ id: t.String() }), t.Object({ email: t.String() })],
           { additionalProperties: false },
         ),
         t.Partial(
@@ -97,61 +79,42 @@ export const UrlWhereUnique = t.Recursive(
         ),
         t.Partial(
           t.Object(
-            {
-              id: t.String(),
-              shortId: t.String(),
-              originalUrl: t.String(),
-              createdAt: t.Date(),
-              clicks: t.Integer(),
-              createdBy: t.String(),
-            },
+            { id: t.String(), email: t.String(), createdAt: t.Date() },
             { additionalProperties: false },
           ),
         ),
       ],
       { additionalProperties: false },
     ),
-  { $id: "Url" },
+  { $id: "Waitlist" },
 );
 
-export const UrlSelect = t.Partial(
+export const WaitlistSelect = t.Partial(
   t.Object(
     {
       id: t.Boolean(),
-      shortId: t.Boolean(),
-      originalUrl: t.Boolean(),
+      email: t.Boolean(),
       createdAt: t.Boolean(),
-      clicks: t.Boolean(),
-      createdBy: t.Boolean(),
       _count: t.Boolean(),
     },
     { additionalProperties: false },
   ),
 );
 
-export const UrlInclude = t.Partial(
+export const WaitlistInclude = t.Partial(
   t.Object({ _count: t.Boolean() }, { additionalProperties: false }),
 );
 
-export const UrlOrderBy = t.Partial(
+export const WaitlistOrderBy = t.Partial(
   t.Object(
     {
       id: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
-      shortId: t.Union([t.Literal("asc"), t.Literal("desc")], {
-        additionalProperties: false,
-      }),
-      originalUrl: t.Union([t.Literal("asc"), t.Literal("desc")], {
+      email: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
       createdAt: t.Union([t.Literal("asc"), t.Literal("desc")], {
-        additionalProperties: false,
-      }),
-      clicks: t.Union([t.Literal("asc"), t.Literal("desc")], {
-        additionalProperties: false,
-      }),
-      createdBy: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
     },
@@ -159,16 +122,16 @@ export const UrlOrderBy = t.Partial(
   ),
 );
 
-export const Url = t.Composite([UrlPlain, UrlRelations], {
+export const Waitlist = t.Composite([WaitlistPlain, WaitlistRelations], {
   additionalProperties: false,
 });
 
-export const UrlInputCreate = t.Composite(
-  [UrlPlainInputCreate, UrlRelationsInputCreate],
+export const WaitlistInputCreate = t.Composite(
+  [WaitlistPlainInputCreate, WaitlistRelationsInputCreate],
   { additionalProperties: false },
 );
 
-export const UrlInputUpdate = t.Composite(
-  [UrlPlainInputUpdate, UrlRelationsInputUpdate],
+export const WaitlistInputUpdate = t.Composite(
+  [WaitlistPlainInputUpdate, WaitlistRelationsInputUpdate],
   { additionalProperties: false },
 );

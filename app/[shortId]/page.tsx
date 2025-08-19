@@ -2,9 +2,9 @@ import { redirect, notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 
 interface PageProps {
-    params: {
+    params: Promise<{
         shortId: string;
-    };
+    }>;
 }
 
 export default async function RedirectPage({ params }: PageProps) {

@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { QueryProvider } from '@/providers/query-provider'
 import { Toaster } from "@/components/ui/sonner"
+import { Navbar } from '@/components/navbar'
 
 
 const geistSans = Geist({
@@ -32,7 +33,8 @@ export default function RootLayout({
         <body className={`${geistSans.variable} ${geistMono.variable} flex min-h-full flex-col antialiased`}>
           <QueryProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                {children}
+              <Navbar />
+              {children}
               <Toaster />
             </ThemeProvider>
           </QueryProvider>

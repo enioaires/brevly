@@ -5,7 +5,7 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
 import { urlRoutes } from '../routes/url'
 
-const app = new Elysia({ prefix: '/api' })
+export const app = new Elysia({ prefix: '/api' })
     .onError(({ code, error, set }) => {
         const timestamp = new Date().toISOString()
 
@@ -100,3 +100,5 @@ export const GET = app.handle
 export const POST = app.handle
 export const PUT = app.handle
 export const DELETE = app.handle
+
+export type App = typeof app

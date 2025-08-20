@@ -5,7 +5,7 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto'
 import { waitlistRoutes } from '../routes/waitlist'
 
-export const app = new Elysia({ prefix: '/api' })
+const app = new Elysia({ prefix: '/api' })
     .onError(({ code, error, set }) => {
         const timestamp = new Date().toISOString()
 

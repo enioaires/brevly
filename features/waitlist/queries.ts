@@ -5,7 +5,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 interface WaitlistEntry {
     id: string;
     email: string;
+    projectDetails: string;
+    phoneNumber?: string;
+    companyName?: string;
     createdAt: Date;
+}
+
+interface WaitlistCreateInput {
+    email: string;
+    projectDetails: string;
+    phoneNumber?: string;
+    companyName?: string;
 }
 
 interface WaitlistCreateResponse {
@@ -34,9 +44,9 @@ export const useCreateWaitlistEntry = () => {
     const queryClient = useQueryClient();
     
     return useMutation({
-        mutationFn: async (email: string) => {
+        mutationFn: async (input: WaitlistCreateInput) => {
             const client = getClient();
-            const response = await client.api.waitlist.post({ email });
+            const response = await client.api.waitlist.post(input);
 
             if (!response.data) {
                 throw new Error('No response data');

@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Brevly'
+  title: 'BrevDigital'
 }
 
 export default function RootLayout({

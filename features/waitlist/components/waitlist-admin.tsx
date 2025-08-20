@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useGetWaitlistEntries } from "../queries";
 
 export function WaitlistAdmin() {
@@ -95,30 +94,56 @@ export function WaitlistAdmin() {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-medium text-gray-500 pb-2">
-              <div>Email</div>
-              <div>Data de Inscrição</div>
-            </div>
-            <Separator />
-            <div className="space-y-3">
+            <div className="space-y-4">
               {sortedEntries.map((entry, index) => (
                 <div key={entry.id}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3">
-                    <div className="font-medium text-gray-900">
-                      {entry.email}
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <div className="font-medium text-gray-900 text-lg">
+                        {entry.email}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {new Date(entry.createdAt).toLocaleString('pt-BR', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: 'America/Sao_Paulo'
+                        })}
+                      </div>
                     </div>
-                    <div className="text-gray-600">
-                      {new Date(entry.createdAt).toLocaleString('pt-BR', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        timeZone: 'America/Sao_Paulo'
-                      })}
+                    
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-sm font-medium text-gray-700">Detalhes do Projeto:</span>
+                        <p className="text-gray-900 mt-1">{entry.projectDetails}</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {entry.phoneNumber && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-700">Telefone:</span>
+                            <p className="text-gray-900">{entry.phoneNumber}</p>
+                          </div>
+                        )}
+                        
+                        {entry.companyName && (
+                          <div>
+                            <span className="text-sm font-medium text-gray-700">Empresa:</span>
+                            <p className="text-gray-900">{entry.companyName}</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {!entry.phoneNumber && !entry.companyName && (
+                        <div className="text-sm text-gray-500 italic">
+                          Nenhuma informação adicional fornecida
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {index < sortedEntries.length - 1 && <Separator />}
+                  {index < sortedEntries.length - 1 && <div className="h-4" />}
                 </div>
               ))}
             </div>

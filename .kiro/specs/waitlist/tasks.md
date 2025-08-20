@@ -1,47 +1,42 @@
 # Implementation Plan
 
-- [x] 1. Criar modelo Waitlist no Prisma
+- [x] 1. Atualizar modelo Waitlist no Prisma
 
 
 
 
 
 
-  - Adicionar modelo Waitlist ao schema.prisma com campos id, email e createdAt
-  - Configurar constraint unique no email e índice na data de criação
-  - Gerar e executar migration para criar a tabela no banco
-  - _Requirements: 1.3, 2.3, 3.1_
+  - Adicionar campos projectDetails (obrigatório), phoneNumber e companyName (opcionais) ao schema.prisma
+  - Manter constraint unique no email e índice na data de criação
+  - Gerar e executar migration para adicionar os novos campos
+  - _Requirements: 6.1, 6.2, 6.4, 6.5_
 
-- [x] 2. Implementar endpoints da API waitlist
-
-
-
-
-
-  - Criar arquivo de rotas waitlist em app/api/routes/waitlist.ts
-  - Implementar endpoint POST /api/waitlist para inscrições públicas com validação de email
-  - Implementar endpoint GET /api/waitlist protegido por autenticação para listar inscrições
-  - Adicionar tratamento de erros específicos (email duplicado, validação, autorização)
-  - _Requirements: 3.1, 3.2, 3.3, 3.4_
-
-- [ ] 3. Integrar rotas waitlist no app principal
-  - Importar e registrar as rotas waitlist no arquivo app/api/[[...slugs]]/route.ts
-  - Verificar se a integração está funcionando corretamente
-  - _Requirements: 3.1, 3.2_
-
-- [x] 4. Criar queries e mutations para waitlist
+- [x] 2. Atualizar endpoints da API waitlist
 
 
 
 
 
-  - Implementar queries React Query em features/waitlist/queries.ts
-  - Criar useCreateWaitlistEntry mutation para inscrições
-  - Criar useGetWaitlistEntries query para listar inscrições (protegida)
-  - Usar o padrão do cliente Elysia existente
-  - _Requirements: 1.2, 1.4, 2.1, 3.1, 3.2_
 
-- [x] 5. Criar componente de formulário de waitlist
+  - Modificar endpoint POST /api/waitlist para aceitar os novos campos (projectDetails obrigatório, phoneNumber e companyName opcionais)
+  - Atualizar validação para incluir obrigatoriedade de projectDetails
+  - Modificar endpoint GET /api/waitlist para retornar todos os campos
+  - Atualizar tratamento de erros para incluir validação de projectDetails
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [x] 3. Atualizar queries e mutations para waitlist
+
+
+
+
+
+  - Modificar interfaces TypeScript em features/waitlist/queries.ts para incluir novos campos
+  - Atualizar useCreateWaitlistEntry mutation para aceitar projectDetails, phoneNumber e companyName
+  - Atualizar useGetWaitlistEntries query para retornar todos os campos
+  - _Requirements: 3.1, 3.2, 3.3_
+
+- [x] 4. Criar componente de formulário para hero section
 
 
 
@@ -50,49 +45,57 @@
 
 
 
+  - Implementar HeroWaitlistForm em features/waitlist/components/hero-waitlist-form.tsx
+  - Incluir apenas campos essenciais: email e projectDetails
+  - Usar useCreateWaitlistEntry mutation atualizada
+  - Adicionar validação client-side para campos obrigatórios
+  - Prestar atencao pois ja existe o waitlist-form.tsx
+  - _Requirements: 1.1, 1.3, 1.4, 1.7, 5.1, 5.4_
 
-  - Implementar WaitlistForm em features/waitlist/components/waitlist-form.tsx
-  - Usar useCreateWaitlistEntry mutation para submissão
-  - Adicionar validação client-side de email e estados de loading/sucesso/erro
-  - _Requirements: 1.1, 1.2, 1.4, 1.5_
-
-- [x] 6. Atualizar página inicial com formulário de waitlist
-
-
-
-
-
-  - Modificar app/page.tsx para incluir o formulário de waitlist
-  - Manter design simples focado na conversão
-  - _Requirements: 1.1_
-
-- [x] 7. Criar componente administrativo da waitlist
+- [x] 5. Criar componente de formulário para seção de contato
 
 
 
 
 
-  - Implementar WaitlistAdmin em features/waitlist/components/waitlist-admin.tsx
-  - Usar useGetWaitlistEntries query para buscar dados
-  - Exibir lista de emails com data de inscrição ordenada por data
-  - Tratar estado vazio quando não há inscrições
-  - _Requirements: 2.1, 2.3, 2.4_
 
-- [x] 8. Criar página administrativa
+  - Implementar ContactWaitlistForm em features/waitlist/components/contact-waitlist-form.tsx
+  - Incluir todos os campos: email, projectDetails (obrigatórios) e phoneNumber, companyName (opcionais)
+  - Usar useCreateWaitlistEntry mutation atualizada
+  - Adicionar validação client-side expandida
+  - _Requirements: 1.2, 1.3, 1.4, 1.8, 5.2, 5.5_
 
-
-
-
-  - Implementar app/admin/page.tsx com o componente WaitlistAdmin
-  - Garantir que apenas usuários autenticados possam acessar
-  - _Requirements: 2.1, 2.2_
-
-- [x] 9. Configurar middleware para proteger rota admin
+- [x] 6. Atualizar hero section na página inicial
 
 
 
 
 
-  - Modificar middleware.ts para proteger a rota /admin
-  - Redirecionar usuários não autenticados para login
-  - _Requirements: 2.2, 4.1, 4.2, 4.3_
+
+  - Modificar components/hero-section.tsx para incluir HeroWaitlistForm
+  - Integrar o formulário no design existente da hero section
+  - _Requirements: 5.1, 5.4_
+
+- [x] 7. Atualizar seção de contato na página inicial
+
+
+
+
+
+
+  - Modificar components/contact-section.tsx para incluir ContactWaitlistForm
+  - Integrar o formulário completo no design existente da seção de contato
+  - _Requirements: 5.2, 5.5_
+
+- [x] 8. Atualizar componente administrativo da waitlist
+
+
+
+
+
+  - Modificar WaitlistAdmin em features/waitlist/components/waitlist-admin.tsx
+  - Exibir todos os campos: email, projectDetails, phoneNumber, companyName e data
+  - Organizar visualização de forma clara e responsiva
+  - Tratar campos opcionais que podem estar vazios
+  - _Requirements: 2.1, 2.3, 2.5_
+

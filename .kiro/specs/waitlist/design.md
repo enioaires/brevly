@@ -2,22 +2,22 @@
 
 ## Overview
 
-A funcionalidade de waitlist será implementada seguindo a arquitetura existente do projeto, utilizando Prisma para persistência, Elysia para API endpoints, e Next.js para as páginas frontend. O sistema será simples e focado na funcionalidade essencial de captura de emails e visualização administrativa.
+A funcionalidade de waitlist expandida será implementada seguindo a arquitetura existente do projeto, utilizando Prisma para persistência, Elysia para API endpoints, e Next.js para as páginas frontend. O sistema agora captura informações mais detalhadas dos interessados, incluindo detalhes do projeto (obrigatório), telefone e empresa (opcionais), com formulários disponíveis tanto na hero section quanto na seção de contato.
 
 ## Architecture
 
 ### Database Layer
-- **Prisma**: Gerenciamento do modelo `Waitlist` com campos essenciais (email, data de criação)
-- **PostgreSQL**: Base de dados existente será estendida com a nova tabela
+- **Prisma**: Gerenciamento do modelo `Waitlist` expandido com campos obrigatórios (email, detalhes do projeto) e opcionais (telefone, empresa)
+- **PostgreSQL**: Base de dados existente será atualizada com migração para adicionar novos campos
 
 ### API Layer  
-- **Elysia**: Endpoints RESTful para operações CRUD da waitlist
+- **Elysia**: Endpoints RESTful atualizados para operações CRUD da waitlist expandida
 - **Autenticação**: Reutilização do sistema Clerk existente para proteger rotas administrativas
-- **Validação**: Validação de email usando schemas TypeBox
+- **Validação**: Validação expandida usando schemas TypeBox para todos os novos campos
 
 ### Frontend Layer
-- **Next.js**: Páginas para inscrição pública ("/") e administração ("/admin")
-- **Componentes**: Componente reutilizável para formulário de waitlist
+- **Next.js**: Páginas atualizadas para inscrição pública ("/") e administração ("/admin")
+- **Componentes**: Componentes de formulário para hero section e seção de contato
 - **Middleware**: Extensão do middleware existente para proteger rota admin
 
 ## Components and Interfaces
@@ -25,9 +25,12 @@ A funcionalidade de waitlist será implementada seguindo a arquitetura existente
 ### Database Model
 ```prisma
 model Waitlist {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  email          String   @unique
+  projectDetails String   // Campo obrigatório para detalhes do projeto
+  phoneNumber    String?  // Campo opcional para telefone
+  companyName    String?  // Campo opcional para empresa
+  createdAt      DateTime @default(now())
   
   @@map("waitlist")
   @@index([createdAt])
@@ -38,34 +41,37 @@ model Waitlist {
 
 #### POST /api/waitlist
 - **Público**: Aceita inscrições de qualquer visitante
-- **Input**: `{ email: string }`
-- **Output**: Confirmação de sucesso ou erro (email duplicado)
-- **Validação**: Email válido e único
+- **Input**: `{ email: string, projectDetails: string, phoneNumber?: string, companyName?: string }`
+- **Output**: Confirmação de sucesso ou erro (email duplicado, validação)
+- **Validação**: Email válido e único, detalhes do projeto obrigatórios
 
 #### GET /api/waitlist  
 - **Protegido**: Apenas usuários autenticados via Clerk
-- **Output**: Lista completa de emails com timestamps
+- **Output**: Lista completa de inscrições com todos os campos e timestamps
 - **Ordenação**: Por data de criação (mais recentes primeiro)
 
 ### Frontend Components
 
-#### WaitlistForm Component
-- Formulário simples com input de email e botão submit
-- Estados de loading, sucesso e erro
-- Validação client-side básica
-- Localizado em `features/waitlist/components/waitlist-form.tsx`
+#### WaitlistForm Components
+- **HeroWaitlistForm**: Formulário simplificado para hero section (email + detalhes do projeto)
+- **ContactWaitlistForm**: Formulário completo para seção de contato (todos os campos)
+- Estados de loading, sucesso e erro para ambos
+- Validação client-side expandida
+- Localizados em `features/waitlist/components/`
 
 #### WaitlistAdmin Component  
-- Lista de emails inscritos com data/hora
+- Lista completa de inscrições com todos os campos (email, projeto, telefone, empresa, data)
+- Visualização organizada e responsiva dos dados expandidos
 - Paginação simples se necessário
 - Localizado em `features/waitlist/components/waitlist-admin.tsx`
 
 ### Pages
 
 #### Homepage ("/")
-- Página pública com formulário de inscrição
-- Substitui conteúdo atual da `app/page.tsx`
-- Design minimalista focado na conversão
+- Hero section com formulário simplificado de inscrição
+- Seção de contato com formulário completo de inscrição
+- Atualização dos componentes existentes na `app/page.tsx`
+- Design focado na conversão com múltiplas oportunidades de inscrição
 
 #### Admin Page ("/admin")
 - Página protegida para visualizar inscrições
@@ -78,13 +84,24 @@ model Waitlist {
 ```typescript
 interface WaitlistEntry {
   id: string
-  email: string  
+  email: string
+  projectDetails: string
+  phoneNumber?: string
+  companyName?: string
   createdAt: Date
 }
 ```
 
 ### API Responses
 ```typescript
+// POST /api/waitlist - Input
+interface WaitlistCreateInput {
+  email: string
+  projectDetails: string
+  phoneNumber?: string
+  companyName?: string
+}
+
 // POST /api/waitlist - Success
 interface WaitlistCreateResponse {
   success: true
@@ -112,6 +129,7 @@ interface WaitlistListResponse {
 
 ### Client-Side Errors
 - **Email inválido**: Validação em tempo real no formulário
+- **Detalhes do projeto vazios**: Validação obrigatória com feedback claro
 - **Email duplicado**: Mensagem amigável informando que já está inscrito
 - **Erro de rede**: Retry automático com feedback visual
 
@@ -125,6 +143,7 @@ interface WaitlistListResponse {
 ```typescript
 const WAITLIST_ERRORS = {
   INVALID_EMAIL: 'INVALID_EMAIL',
+  MISSING_PROJECT_DETAILS: 'MISSING_PROJECT_DETAILS',
   DUPLICATE_EMAIL: 'DUPLICATE_EMAIL', 
   UNAUTHORIZED: 'UNAUTHORIZED',
   INTERNAL_ERROR: 'INTERNAL_ERROR'
@@ -134,9 +153,10 @@ const WAITLIST_ERRORS = {
 ## Testing Strategy
 
 ### Manual Testing Focus
-- **Fluxo de inscrição**: Teste completo do formulário público
-- **Validação de email**: Testes com emails válidos e inválidos  
+- **Fluxo de inscrição**: Teste completo dos formulários (hero e contato)
+- **Validação expandida**: Testes com todos os campos obrigatórios e opcionais
 - **Duplicação**: Tentativa de inscrição com email existente
+- **Campos opcionais**: Teste com e sem telefone/empresa
 - **Autenticação**: Acesso à área admin com e sem login
 - **Responsividade**: Teste em diferentes dispositivos
 
@@ -153,9 +173,11 @@ const WAITLIST_ERRORS = {
 ## Security Considerations
 
 ### Input Validation
-- Sanitização de email no servidor
+- Sanitização de todos os campos de entrada no servidor
+- Validação obrigatória de detalhes do projeto
 - Rate limiting por IP (implementação futura)
 - Validação de formato de email rigorosa
+- Validação opcional de formato de telefone
 
 ### Authentication
 - Reutilização do sistema Clerk existente
@@ -163,9 +185,10 @@ const WAITLIST_ERRORS = {
 - Verificação de token em todas as requisições protegidas
 
 ### Data Protection
-- Emails armazenados de forma segura
+- Todos os dados pessoais armazenados de forma segura
 - Sem exposição de dados sensíveis em logs
-- Compliance básico com LGPD (dados mínimos necessários)
+- Compliance básico com LGPD (coleta apenas de dados necessários)
+- Campos opcionais claramente identificados
 
 ## Performance Considerations
 

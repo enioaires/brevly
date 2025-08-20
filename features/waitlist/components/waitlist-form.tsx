@@ -29,8 +29,10 @@ export function WaitlistForm() {
 
   const onSubmit = async (data: WaitlistFormData) => {
     try {
-      // Apenas o email é enviado para a API, os outros campos são coletados mas não integrados
-      await createWaitlistEntry.mutateAsync(data.email);
+      await createWaitlistEntry.mutateAsync({
+        email: data.email,
+        projectDetails: data.projectDetails,
+      });
       setIsSubmitted(true);
       reset();
       toast.success("Obrigado! Entraremos em contato em breve.");

@@ -26,9 +26,12 @@ generator prismabox {
 // O Clerk gerencia os usuários, então não precisamos de um modelo User
 
 model Waitlist {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  email          String   @unique
+  projectDetails String   // Campo obrigatório para detalhes do projeto
+  phoneNumber    String?  // Campo opcional para telefone
+  companyName    String?  // Campo opcional para empresa
+  createdAt      DateTime @default(now())
   
   @@map("waitlist")
   @@index([createdAt])

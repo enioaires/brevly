@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SectionBackground } from "@/components/ui/section-background";
+import { useCreateWaitlistEntry } from "@/features/waitlist/queries";
 
 interface ContactFormData {
-  fullName: string;
   email: string;
   phone: string;
   company: string;
@@ -20,6 +20,7 @@ interface ContactFormData {
 
 export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const createWaitlistEntry = useCreateWaitlistEntry();
 
   const {
     register,
@@ -31,14 +32,26 @@ export function ContactSection() {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
-      // Simular envio do formulário
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log("Dados do formulário:", data);
-      toast.success("Mensagem enviada com sucesso! Entraremos em contato em breve.");
+      // Prepare data for waitlist submission, filtering out empty optional fields
+      const submitData = {
+        email: data.email,
+        projectDetails: data.projectDetails,
+        ...(data.phone && data.phone.trim() && { phoneNumber: data.phone }),
+        ...(data.company && data.company.trim() && { companyName: data.company }),
+      };
+
+      await createWaitlistEntry.mutateAsync(submitData);
+      toast.success("Obrigado! Entraremos em contato em breve.");
       reset();
     } catch (error) {
-      toast.error("Erro ao enviar mensagem. Tente novamente.");
+      const errorMessage = error instanceof Error ? error.message : "Erro ao enviar formulário";
+
+      // Handle specific error cases
+      if (errorMessage.includes("já está na waitlist") || errorMessage.includes("already exists")) {
+        toast.info("Este email já está cadastrado!");
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -63,49 +76,26 @@ export function ContactSection() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Primeira linha - Nome e Email */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">Nome Completo</Label>
-                    <Input
-                      id="fullName"
-                      type="text"
-                      placeholder="João Silva"
-                      {...register("fullName", {
-                        required: "Nome completo é obrigatório",
-                        minLength: {
-                          value: 2,
-                          message: "Nome deve ter pelo menos 2 caracteres"
-                        }
-                      })}
-                      className={errors.fullName ? "border-destructive" : ""}
-                      disabled={isSubmitting}
-                    />
-                    {errors.fullName && (
-                      <p className="text-sm text-destructive">{errors.fullName.message}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Endereço de Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="joao@empresa.com"
-                      {...register("email", {
-                        required: "Email é obrigatório",
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Email inválido"
-                        }
-                      })}
-                      className={errors.email ? "border-destructive" : ""}
-                      disabled={isSubmitting}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-destructive">{errors.email.message}</p>
-                    )}
-                  </div>
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Endereço de Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="joao@empresa.com"
+                    {...register("email", {
+                      required: "Email é obrigatório",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Email inválido"
+                      }
+                    })}
+                    className={errors.email ? "border-destructive" : ""}
+                    disabled={isSubmitting}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email.message}</p>
+                  )}
                 </div>
 
                 {/* Segunda linha - Telefone e Empresa */}
@@ -117,7 +107,6 @@ export function ContactSection() {
                       type="tel"
                       placeholder="(11) 99999-9999"
                       {...register("phone", {
-                        required: "Telefone é obrigatório",
                         pattern: {
                           value: /^\(\d{2}\)\s\d{4,5}-\d{4}$/,
                           message: "Formato: (11) 99999-9999"
@@ -148,9 +137,7 @@ export function ContactSection() {
                       id="company"
                       type="text"
                       placeholder="Sua Empresa"
-                      {...register("company", {
-                        required: "Nome da empresa é obrigatório"
-                      })}
+                      {...register("company")}
                       className={errors.company ? "border-destructive" : ""}
                       disabled={isSubmitting}
                     />

@@ -13,6 +13,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll"
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -24,6 +26,8 @@ const navigationLinks = [
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const { smoothScrollTo } = useSmoothScroll();
+    const { isSignedIn } = useAuth()
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -102,7 +106,7 @@ export function Navbar() {
                     </Popover>
                     {/* Main nav */}
                     <a href="#" className="text-primary hover:text-primary/90 text-xl">
-                        brevly.
+                        BrevDigital
                     </a>
                 </div>
                 {/* Right side */}
@@ -124,6 +128,13 @@ export function Navbar() {
                                     </button>
                                 </NavigationMenuItem>
                             ))}
+                            {isSignedIn && (
+                                <Link href={"/admin"}>
+                                    <Button>
+                                        Painel
+                                    </Button>
+                                </Link>
+                            )}
                         </NavigationMenuList>
                     </NavigationMenu>
                 </div>

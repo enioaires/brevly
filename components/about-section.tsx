@@ -1,5 +1,6 @@
 import { CheckCircle, Users, Zap } from "lucide-react";
 import { SectionBackground } from "@/components/ui/section-background";
+import Image from "next/image";
 
 export function AboutSection() {
   return (
@@ -76,13 +77,17 @@ export function AboutSection() {
               </div>
             </div>
 
-            {/* Lado direito - Placeholder para imagem */}
+            {/* Lado direito - Imagem */}
             <div className="flex justify-center lg:justify-end">
-              <div className="w-full max-w-lg h-80 bg-muted/20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Imagem de Colaboração da Equipe</p>
-                </div>
+              <div className="w-full max-w-lg">
+                <Image
+                  src="/about.jpg"
+                  alt="Equipe BrevDigital trabalhando em colaboração"
+                  width={500}
+                  height={400}
+                  className="w-full h-auto rounded-lg shadow-lg object-cover"
+                  priority={false}
+                />
               </div>
             </div>
           </div>

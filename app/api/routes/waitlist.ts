@@ -3,18 +3,31 @@ import prisma from '@/lib/prisma'
 import { errorCodes } from '@/lib/constants'
 import { authenticateRequest } from '../plugins/auth'
 
-// Schema para validação de email
-const EmailSchema = t.Object({
+// Schema para validação de entrada na waitlist
+const WaitlistCreateSchema = t.Object({
     email: t.String({
         format: 'email',
         description: 'Valid email address'
-    })
+    }),
+    projectDetails: t.String({
+        minLength: 1,
+        description: 'Project details (required)'
+    }),
+    phoneNumber: t.Optional(t.String({
+        description: 'Phone number (optional)'
+    })),
+    companyName: t.Optional(t.String({
+        description: 'Company name (optional)'
+    }))
 })
 
 // Schema para resposta da waitlist entry
 const WaitlistEntrySchema = t.Object({
     id: t.String(),
     email: t.String(),
+    projectDetails: t.String(),
+    phoneNumber: t.Union([t.String(), t.Null()]),
+    companyName: t.Union([t.String(), t.Null()]),
     createdAt: t.Date()
 })
 
@@ -45,7 +58,7 @@ export const waitlistRoutes = new Elysia({ prefix: '/waitlist' })
     // POST /api/waitlist - Endpoint público para inscrições
     .post('/', async ({ body, set }) => {
         try {
-            const { email } = body
+            const { email, projectDetails, phoneNumber, companyName } = body
 
             // Validação adicional de email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -60,13 +73,31 @@ export const waitlistRoutes = new Elysia({ prefix: '/waitlist' })
                 }
             }
 
-            // Normalizar email (lowercase)
+            // Validação de projectDetails obrigatório
+            if (!projectDetails || projectDetails.trim().length === 0) {
+                set.status = 400
+                return {
+                    success: false,
+                    error: {
+                        code: 'MISSING_PROJECT_DETAILS',
+                        message: 'Project details are required'
+                    }
+                }
+            }
+
+            // Normalizar dados
             const normalizedEmail = email.toLowerCase().trim()
+            const normalizedProjectDetails = projectDetails.trim()
+            const normalizedPhoneNumber = phoneNumber?.trim() || null
+            const normalizedCompanyName = companyName?.trim() || null
 
             // Tentar criar a entrada na waitlist
             const waitlistEntry = await prisma.waitlist.create({
                 data: {
-                    email: normalizedEmail
+                    email: normalizedEmail,
+                    projectDetails: normalizedProjectDetails,
+                    phoneNumber: normalizedPhoneNumber,
+                    companyName: normalizedCompanyName
                 }
             })
 
@@ -101,11 +132,11 @@ export const waitlistRoutes = new Elysia({ prefix: '/waitlist' })
             }
         }
     }, {
-        body: EmailSchema,
+        body: WaitlistCreateSchema,
         response: t.Union([SuccessResponseSchema, ErrorResponseSchema]),
         detail: {
             summary: 'Join waitlist',
-            description: 'Add an email to the waitlist for product notifications',
+            description: 'Add an email and project details to the waitlist for product notifications',
             tags: ['Waitlist']
         }
     })

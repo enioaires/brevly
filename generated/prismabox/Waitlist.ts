@@ -5,19 +5,36 @@ import { __transformDate__ } from "./__transformDate__";
 import { __nullable__ } from "./__nullable__";
 
 export const WaitlistPlain = t.Object(
-  { id: t.String(), email: t.String(), createdAt: t.Date() },
+  {
+    id: t.String(),
+    email: t.String(),
+    projectDetails: t.String(),
+    phoneNumber: __nullable__(t.String()),
+    companyName: __nullable__(t.String()),
+    createdAt: t.Date(),
+  },
   { additionalProperties: false },
 );
 
 export const WaitlistRelations = t.Object({}, { additionalProperties: false });
 
 export const WaitlistPlainInputCreate = t.Object(
-  { email: t.String() },
+  {
+    email: t.String(),
+    projectDetails: t.String(),
+    phoneNumber: t.Optional(__nullable__(t.String())),
+    companyName: t.Optional(__nullable__(t.String())),
+  },
   { additionalProperties: false },
 );
 
 export const WaitlistPlainInputUpdate = t.Object(
-  { email: t.Optional(t.String()) },
+  {
+    email: t.Optional(t.String()),
+    projectDetails: t.Optional(t.String()),
+    phoneNumber: t.Optional(__nullable__(t.String())),
+    companyName: t.Optional(__nullable__(t.String())),
+  },
   { additionalProperties: false },
 );
 
@@ -40,6 +57,9 @@ export const WaitlistWhere = t.Partial(
           OR: t.Array(Self, { additionalProperties: false }),
           id: t.String(),
           email: t.String(),
+          projectDetails: t.String(),
+          phoneNumber: t.String(),
+          companyName: t.String(),
           createdAt: t.Date(),
         },
         { additionalProperties: false },
@@ -79,7 +99,14 @@ export const WaitlistWhereUnique = t.Recursive(
         ),
         t.Partial(
           t.Object(
-            { id: t.String(), email: t.String(), createdAt: t.Date() },
+            {
+              id: t.String(),
+              email: t.String(),
+              projectDetails: t.String(),
+              phoneNumber: t.String(),
+              companyName: t.String(),
+              createdAt: t.Date(),
+            },
             { additionalProperties: false },
           ),
         ),
@@ -94,6 +121,9 @@ export const WaitlistSelect = t.Partial(
     {
       id: t.Boolean(),
       email: t.Boolean(),
+      projectDetails: t.Boolean(),
+      phoneNumber: t.Boolean(),
+      companyName: t.Boolean(),
       createdAt: t.Boolean(),
       _count: t.Boolean(),
     },
@@ -112,6 +142,15 @@ export const WaitlistOrderBy = t.Partial(
         additionalProperties: false,
       }),
       email: t.Union([t.Literal("asc"), t.Literal("desc")], {
+        additionalProperties: false,
+      }),
+      projectDetails: t.Union([t.Literal("asc"), t.Literal("desc")], {
+        additionalProperties: false,
+      }),
+      phoneNumber: t.Union([t.Literal("asc"), t.Literal("desc")], {
+        additionalProperties: false,
+      }),
+      companyName: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
       createdAt: t.Union([t.Literal("asc"), t.Literal("desc")], {

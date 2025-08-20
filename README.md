@@ -2,6 +2,49 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment Setup
+
+1. Copy the environment variables file:
+```bash
+cp .env.example .env
+```
+
+2. Configure your environment variables in `.env`:
+   - Set up your database URL
+   - Configure Clerk authentication keys
+   - Set up email notifications (see Email Configuration section below)
+
+### Email Configuration
+
+This project includes automatic email notifications for waitlist registrations. To enable this feature:
+
+1. **Gmail Setup**: You'll need a Gmail account to send notifications
+2. **Generate Gmail App Password**:
+   - Go to [Google Account Settings](https://myaccount.google.com/apppasswords)
+   - You may need to enable 2-Factor Authentication first
+   - Select "Mail" as the app and "Other" as the device
+   - Copy the generated 16-character password
+3. **Configure Environment Variables**:
+   ```bash
+   GMAIL_USER=your-gmail@gmail.com
+   GMAIL_APP_PASSWORD=your-16-character-app-password
+   ADMIN_EMAIL=admin@brevlydigital.com
+   FROM_EMAIL=noreply@brevlydigital.com
+   ENABLE_EMAIL_NOTIFICATIONS=true
+   ```
+
+**Note**: Use the App Password, not your regular Gmail password. The App Password is a 16-character code without spaces.
+
+#### Email Configuration Troubleshooting
+
+- **"Invalid login"**: Make sure you're using the App Password, not your regular Gmail password
+- **"Less secure app access"**: App Passwords bypass this requirement, no need to enable less secure apps
+- **"2FA required"**: You must enable 2-Factor Authentication on your Gmail account before generating App Passwords
+- **No emails received**: Check that `ADMIN_EMAIL` is set correctly and `ENABLE_EMAIL_NOTIFICATIONS=true`
+- **Development mode**: Set `ENABLE_EMAIL_NOTIFICATIONS=false` to disable emails during development
+
+### Development Server
+
 First, run the development server:
 
 ```bash

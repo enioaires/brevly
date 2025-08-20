@@ -2,6 +2,7 @@ import { Elysia, t } from 'elysia'
 import prisma from '@/lib/prisma'
 import { errorCodes } from '@/lib/constants'
 import { authenticateRequest } from '../plugins/auth'
+import { sendWaitlistNotification } from '@/lib/email-service'
 
 // Schema para validação de entrada na waitlist
 const WaitlistCreateSchema = t.Object({
@@ -99,6 +100,16 @@ export const waitlistRoutes = new Elysia({ prefix: '/waitlist' })
                     phoneNumber: normalizedPhoneNumber,
                     companyName: normalizedCompanyName
                 }
+            })
+
+            // Enviar notificação por email de forma assíncrona (não bloqueia a resposta)
+            sendWaitlistNotification(waitlistEntry).catch(error => {
+                console.error('Failed to send waitlist notification email:', {
+                    error: error instanceof Error ? error.message : 'Unknown error',
+                    entryId: waitlistEntry.id,
+                    entryEmail: waitlistEntry.email,
+                    timestamp: new Date().toISOString()
+                })
             })
 
             set.status = 201

@@ -106,7 +106,7 @@ export function Navbar() {
                     </Popover>
                     {/* Main nav */}
                     <a href="#" className="text-primary hover:text-primary/90 text-xl">
-                        BrevDigital
+                        BrevlyDigital
                     </a>
                 </div>
                 {/* Right side */}

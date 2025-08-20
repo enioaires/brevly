@@ -24,7 +24,7 @@ export function AboutSection() {
 
                 <div className="space-y-4 text-muted-foreground">
                   <p className="text-lg leading-relaxed">
-                    Fundada em 2024, a BrevDigital tem estado na vanguarda da inovação digital,
+                    Fundada em 2024, a BrevlyDigital tem estado na vanguarda da inovação digital,
                     ajudando empresas a transformar sua presença online através de design estratégico
                     e desenvolvimento.
                   </p>
@@ -82,7 +82,7 @@ export function AboutSection() {
               <div className="w-full max-w-lg">
                 <Image
                   src="/about.jpg"
-                  alt="Equipe BrevDigital trabalhando em colaboração"
+                  alt="Equipe BrevlyDigital trabalhando em colaboração"
                   width={500}
                   height={400}
                   className="w-full h-auto rounded-lg shadow-lg object-cover"

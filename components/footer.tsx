@@ -26,7 +26,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
                     {/* Coluna da Empresa */}
                     <div className="space-y-4 md:col-span-1 lg:pr-8">
-                        <h3 className="text-xl font-bold text-primary">BrevDigital</h3>
+                        <h3 className="text-xl font-bold text-primary">BrevlyDigital</h3>
                         <p className="text-muted-foreground text-sm leading-relaxed">
                             Criamos experiências digitais que impulsionam o crescimento dos negócios
                             e o engajamento dos usuários.
@@ -95,7 +95,7 @@ export function Footer() {
                             <div className="flex items-start space-x-3">
                                 <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                                 <span className="text-muted-foreground text-sm leading-relaxed">
-                                    Rua da Inovação, 123, Tech City, SP 01234-567
+                                    Rua Juiz Ari Castilho, 17, Pedro Leopoldo, MG 33250-012
                                 </span>
                             </div>
                             <div className="flex items-center space-x-3">
@@ -104,16 +104,16 @@ export function Footer() {
                                     href="tel:+5511987654321"
                                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                                 >
-                                    (11) 98765-4321
+                                    (31) 99740-3252
                                 </a>
                             </div>
                             <div className="flex items-center space-x-3">
                                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                                 <a
-                                    href="mailto:contato@brevdigital.com"
+                                    href="mailto:contato@brevlydigital.com"
                                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                                 >
-                                    contato@brevdigital.com
+                                    contato@brevlydigital.com
                                 </a>
                             </div>
                         </div>
@@ -151,7 +151,7 @@ export function Footer() {
                 {/* Copyright */}
                 <div className="border-t mt-6 pt-6 text-center">
                     <p className="text-xs text-muted-foreground">
-                        © 2025 BrevDigital. Todos os direitos reservados.
+                        © 2025 BrevlyDigital. Todos os direitos reservados.
                     </p>
                 </div>
             </div>
